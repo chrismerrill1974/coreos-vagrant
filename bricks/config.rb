@@ -76,7 +76,7 @@ $share_home=true
 # Customize VMs
 #$vm_gui = false
 #$vm_memory = 1024
-$vm_memory = 5120
+$vm_memory = 6144
 #$vm_cpus = 1
 $vm_cpus = 2
 #$vb_cpuexecutioncap = 100
