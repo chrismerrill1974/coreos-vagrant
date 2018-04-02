@@ -67,9 +67,10 @@ Vagrant.configure("2") do |config|
   config.ssh.forward_agent = true
 
   config.vm.box = "coreos-#{$update_channel}"
-  # Latest updates can wreak havor for developers, so we will fix this to the
+  # Latest updates can wreak havok for developers, so we will fix this to the
   # coreos-beta version that is known to work. We will update this once we are
   # happy with the latest release in coreos-beta channel.
+  # Known working version: 1688.3.0
   # config.vm.box_url = "https://#{$update_channel}.release.core-os.net/amd64-usr/current/coreos_production_vagrant_virtualbox.json"
   config.vm.box_url="https://#{$update_channel}.release.core-os.net/amd64-usr/1688.3.0/coreos_production_vagrant_virtualbox.json"
   
