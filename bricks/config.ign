@@ -133,6 +133,11 @@
         "contents": "[Unit]\nDescription=Install bricks\n\n[Service]\nType=oneshot\nExecStart=/opt/bricks/install-bricks.sh\nRemainAfterExit=true\nUser=core\n\n[Install]\nWantedBy=multi-user.target\n",
         "enable": true,
         "name": "install-bricks.service"
+      },
+      {
+        "contents": "[Unit]\nDescription=Mask locksmithd\nBefore=locksmithd.service\n\n[Service]\nType=oneshot\nExecStart=/usr/bin/systemctl mask --now locksmithd.service\nRemainAfterExit=true\n",
+        "enable": true,
+        "name": "mask-locksmithd.service"
       }
     ]
   }
