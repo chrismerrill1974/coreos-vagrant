@@ -114,7 +114,7 @@
         "name": "install-bricks.service"
       },
       {
-        "contents": "[Unit]\nDescription=Mask locksmithd\n\n[Service]\nType=oneshot\nExecStart=/usr/bin/systemctl mask --now locksmithd.service\nRemainAfterExit=true\n\n[Install]\nWantedBy=multi-user.target\n",
+        "contents": "[Unit]\nDescription=Mask locksmithd\nBefore=locksmithd.service\n\n[Service]\nType=oneshot\nExecStart=/usr/bin/systemctl mask --now locksmithd.service\nRemainAfterExit=true\n\n[Install]\nWantedBy=multi-user.target\n",
         "enable": true,
         "name": "mask-locksmithd.service"
       }
