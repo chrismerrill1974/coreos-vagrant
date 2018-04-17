@@ -141,6 +141,7 @@ Vagrant.configure("2") do |config|
         vb.memory = vm_memory
         vb.cpus = vm_cpus
         vb.customize ["modifyvm", :id, "--cpuexecutioncap", "#{$vb_cpuexecutioncap}"]
+        vb.customize ["modifyvm", :id, "--paravirtprovider", "kvm"]
         config.ignition.config_obj = vb
       end
 
