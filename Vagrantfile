@@ -58,7 +58,7 @@ end
 
 
 def create_and_attach_medium(v)
-    _PERSISTENT_DISK_DIR = File.join(File.dirname(__FILE__), "data")
+    _PERSISTENT_DISK_DIR = File.join(File.dirname(File.dirname(__FILE__)), "vagrant", "data")
     _PERSISTENT_DISK = File.join(_PERSISTENT_DISK_DIR, 'persistent_data.vdi')
 
     if not File.exist?(_PERSISTENT_DISK) then
