@@ -93,7 +93,7 @@ $vm_cpus = 2
 # or, to map host folders to guest folders of the same name,
 # $shared_folders = Hash[*['/home/foo/app1', '/home/foo/app2'].map{|d| [d, d]}.flatten]
 #$shared_folders = {}
-$shared_folders = {'/var/log/amobee' => '/var/log/amobee', '/etc/amobee' => '/etc/amobee', '/var/amobee' => '/var/amobee' }
+$shared_folders = {'/var/log/amobee' => '/var/log/amobee', '/etc/amobee' => '/etc/amobee'}
 
 # Enable port forwarding from guest(s) to host machine, syntax is: { 80 => 8080 }, auto correction is enabled by default.
 $forwarded_ports = { 8443 => 8443 }
