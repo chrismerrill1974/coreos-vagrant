@@ -56,25 +56,38 @@ def vm_memory
   $vb_memory.nil? ? $vm_memory : $vb_memory
 end
 
-
-def create_and_attach_medium(v)
-    _PERSISTENT_DISK_DIR = File.join(File.dirname(File.dirname(__FILE__)), "vagrant", "data")
-    _PERSISTENT_DISK = File.join(_PERSISTENT_DISK_DIR, 'persistent_data.vdi')
-
-    if not File.exist?(_PERSISTENT_DISK) then
-      FileUtils.mkdir_p(_PERSISTENT_DISK_DIR)
-      v.customize ['createmedium', '--filename', _PERSISTENT_DISK, '--size', (20 * 1024)]
-      v.customize ['storagectl', :id, '--name', 'persistent_data', '--add', 'sata', '--hostiocache', 'off']
-      v.customize ['storageattach', :id, '--storagectl', 'persistent_data', '--port', 0, '--type', 'hdd', '--medium', _PERSISTENT_DISK, '--discard', 'on', '--setuuid', 'b121c145-c02E-05FF-FFFF-17A812A1717F']
-    end
+def machine_id
+    File.exists?(".vagrant/machines/core-01/virtualbox/id")? File.read(".vagrant/machines/core-01/virtualbox/id") : ""
 end
 
+PERSISTENT_DISK_DIR = File.join(File.expand_path('~'), ".bricks-data")
+PERSISTENT_DISK = File.join(PERSISTENT_DISK_DIR, 'persistent_data.vdi')
 
 def vm_cpus
   $vb_cpus.nil? ? $vm_cpus : $vb_cpus
 end
 
 Vagrant.configure("2") do |config|
+
+  config.trigger.before :destroy do |trigger|
+    trigger.info = "dettach virtual disk"
+    trigger.run = { inline: "VBoxManage storageattach '#{machine_id}' --storagectl 'persistent_data' --port 0 --medium none" }
+  end
+
+  if not File.exist?(PERSISTENT_DISK)
+    config.vm.provider :virtualbox do |v|
+      FileUtils.mkdir_p(PERSISTENT_DISK_DIR)
+      v.customize ['createmedium', '--filename', PERSISTENT_DISK, '--size', (20 * 1024)]
+    end
+  end
+
+  if machine_id.eql? ""
+    config.vm.provider :virtualbox do |v|
+      v.customize ['storagectl', :id, '--name', 'persistent_data', '--add', 'sata', '--hostiocache', 'off']
+      v.customize ['storageattach', :id, '--storagectl', 'persistent_data', '--port', 0, '--type', 'hdd', '--medium', PERSISTENT_DISK, '--hotpluggable', 'on', '--discard', 'on', '--setuuid', 'b121c145-c02E-05FF-FFFF-17A812A1717F']
+    end
+  end
+
   # always use Vagrants insecure key
   config.ssh.insert_key = false
   # forward ssh agent to easily ssh into the different machines
@@ -95,7 +108,6 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider :virtualbox do |v|
-    create_and_attach_medium(v)
     # On VirtualBox, we don't have guest additions or a functional vboxsf
     # in CoreOS, so tell Vagrant that so it can be smarter.
     v.check_guest_additions = false
