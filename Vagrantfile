@@ -73,7 +73,7 @@ Vagrant.configure("2") do |config|
 
   if File.exist?(MACHINE_ID_FILE)
     config.trigger.before :destroy do |trigger|
-      trigger.info = "dettach virtual disk"
+      trigger.info = "detach virtual disk"
       trigger.run = { inline: "VBoxManage storageattach '#{machine_id}' --storagectl 'persistent_data' --port 0 --medium none" }
     end
   end
