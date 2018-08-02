@@ -56,9 +56,9 @@ def vm_memory
   $vb_memory.nil? ? $vm_memory : $vb_memory
 end
 
-PERSISTENT_DISK_DIR = File.join(File.expand_path('~'), ".bricks-data")
+PERSISTENT_DISK_DIR = File.join(File.expand_path('~'), '.bricks-data')
 PERSISTENT_DISK = File.join(PERSISTENT_DISK_DIR, 'persistent_data.vdi')
-MACHINE_ID_FILE='.vagrant/machines/core-01/virtualbox/id'
+MACHINE_ID_FILE= File.join(File.expand_path('~'),'.bricks/clusters/coreos-vagrant/.vagrant/machines/core-01/virtualbox/id')
 
 def machine_id
     File.exists?(MACHINE_ID_FILE)? File.read(MACHINE_ID_FILE) : ""
