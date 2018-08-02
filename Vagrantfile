@@ -56,12 +56,14 @@ def vm_memory
   $vb_memory.nil? ? $vm_memory : $vb_memory
 end
 
-def machine_id
-    File.exists?(".vagrant/machines/core-01/virtualbox/id")? File.read(".vagrant/machines/core-01/virtualbox/id") : ""
-end
-
 PERSISTENT_DISK_DIR = File.join(File.expand_path('~'), ".bricks-data")
 PERSISTENT_DISK = File.join(PERSISTENT_DISK_DIR, 'persistent_data.vdi')
+MACHINE_ID_FILE='.vagrant/machines/core-01/virtualbox/id'
+
+def machine_id
+    File.exists?(MACHINE_ID_FILE)? File.read(MACHINE_ID_FILE) : ""
+end
+
 
 def vm_cpus
   $vb_cpus.nil? ? $vm_cpus : $vb_cpus
@@ -69,9 +71,11 @@ end
 
 Vagrant.configure("2") do |config|
 
-  config.trigger.before :destroy do |trigger|
-    trigger.info = "dettach virtual disk"
-    trigger.run = { inline: "VBoxManage storageattach '#{machine_id}' --storagectl 'persistent_data' --port 0 --medium none" }
+  if File.exist?(MACHINE_ID_FILE)
+    config.trigger.before :destroy do |trigger|
+      trigger.info = "dettach virtual disk"
+      trigger.run = { inline: "VBoxManage storageattach '#{machine_id}' --storagectl 'persistent_data' --port 0 --medium none" }
+    end
   end
 
   if not File.exist?(PERSISTENT_DISK)
@@ -81,7 +85,7 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  if not File.exist?(".vagrant/machines/core-01/virtualbox/id")
+  if not File.exist?(MACHINE_ID_FILE)
     config.vm.provider :virtualbox do |v|
       v.customize ['storagectl', :id, '--name', 'persistent_data', '--add', 'sata', '--hostiocache', 'off']
     end
