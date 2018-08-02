@@ -69,11 +69,9 @@ end
 
 Vagrant.configure("2") do |config|
 
-  if not machine_id.eql? ""
-    config.trigger.before :destroy do |trigger|
-      trigger.info = "dettach virtual disk"
-      trigger.run = { inline: "VBoxManage storageattach '#{machine_id}' --storagectl 'persistent_data' --port 0 --medium none" }
-    end
+  config.trigger.before :destroy do |trigger|
+    trigger.info = "dettach virtual disk"
+    trigger.run = { inline: "VBoxManage storageattach '#{machine_id}' --storagectl 'persistent_data' --port 0 --medium none" }
   end
 
   if not File.exist?(PERSISTENT_DISK)
@@ -83,11 +81,14 @@ Vagrant.configure("2") do |config|
     end
   end
 
-  if machine_id.eql? ""
+  if not File.exist?(".vagrant/machines/core-01/virtualbox/id")
     config.vm.provider :virtualbox do |v|
       v.customize ['storagectl', :id, '--name', 'persistent_data', '--add', 'sata', '--hostiocache', 'off']
-      v.customize ['storageattach', :id, '--storagectl', 'persistent_data', '--port', 0, '--type', 'hdd', '--medium', PERSISTENT_DISK, '--hotpluggable', 'on', '--discard', 'on', '--setuuid', 'b121c145-c02E-05FF-FFFF-17A812A1717F']
     end
+  end
+
+  config.vm.provider :virtualbox do |v|
+    v.customize ['storageattach', :id, '--storagectl', 'persistent_data', '--port', 0, '--type', 'hdd', '--medium', PERSISTENT_DISK, '--hotpluggable', 'on', '--discard', 'on', '--setuuid', 'b121c145-c02E-05FF-FFFF-17A812A1717F']
   end
 
   # always use Vagrants insecure key
