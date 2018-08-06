@@ -56,44 +56,12 @@ def vm_memory
   $vb_memory.nil? ? $vm_memory : $vb_memory
 end
 
-PERSISTENT_DISK_DIR = File.join(File.expand_path('~'), '.bricks-data')
-PERSISTENT_DISK = File.join(PERSISTENT_DISK_DIR, 'persistent_data.vdi')
-MACHINE_ID_FILE= File.join(File.expand_path('~'),'.bricks/clusters/coreos-vagrant/.vagrant/machines/core-01/virtualbox/id')
-
-def machine_id
-    File.exists?(MACHINE_ID_FILE)? File.read(MACHINE_ID_FILE) : ""
-end
-
-
 def vm_cpus
   $vb_cpus.nil? ? $vm_cpus : $vb_cpus
 end
 
 Vagrant.configure("2") do |config|
-
-  if File.exist?(MACHINE_ID_FILE)
-    config.trigger.before :destroy do |trigger|
-      trigger.info = "detach virtual disk"
-      trigger.run = { inline: "VBoxManage storageattach '#{machine_id}' --storagectl 'persistent_data' --port 0 --medium none" }
-    end
-  end
-
-  if not File.exist?(PERSISTENT_DISK)
-    config.vm.provider :virtualbox do |v|
-      FileUtils.mkdir_p(PERSISTENT_DISK_DIR)
-      v.customize ['createmedium', '--filename', PERSISTENT_DISK, '--size', (20 * 1024)]
-    end
-  end
-
-  if not File.exist?(MACHINE_ID_FILE)
-    config.vm.provider :virtualbox do |v|
-      v.customize ['storagectl', :id, '--name', 'persistent_data', '--add', 'sata', '--hostiocache', 'off']
-    end
-  end
-
-  config.vm.provider :virtualbox do |v|
-    v.customize ['storageattach', :id, '--storagectl', 'persistent_data', '--port', 0, '--type', 'hdd', '--medium', PERSISTENT_DISK, '--hotpluggable', 'on', '--discard', 'on', '--setuuid', 'b121c145-c02E-05FF-FFFF-17A812A1717F']
-  end
+  custom_config(config)
 
   # always use Vagrants insecure key
   config.ssh.insert_key = false
