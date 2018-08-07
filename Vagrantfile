@@ -61,6 +61,8 @@ def vm_cpus
 end
 
 Vagrant.configure("2") do |config|
+  custom_config(config)
+
   # always use Vagrants insecure key
   config.ssh.insert_key = false
   # forward ssh agent to easily ssh into the different machines

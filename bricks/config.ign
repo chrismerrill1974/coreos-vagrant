@@ -52,6 +52,17 @@
         "mode": 493
       }
     ],
+    "disks": [
+      {
+        "device": "/dev/disk/by-id/ata-VBOX_HARDDISK_VBb121c145-7f71a112",
+        "partitions": [
+          {
+            "number": 1
+          }
+        ],
+        "wipeTable": true
+      }
+    ],
     "files": [
       {
         "filesystem": "root",
@@ -89,6 +100,15 @@
         },
         "mode": 420
       }
+    ],
+    "filesystems": [
+      {
+        "mount": {
+          "device": "/dev/disk/by-id/ata-VBOX_HARDDISK_VBb121c145-7f71a112-part1",
+          "format": "ext4"
+        },
+        "name": "persistent_data"
+      }
     ]
   },
   "systemd": {
@@ -97,6 +117,11 @@
         "contents": "[Unit]\nDescription=Docker Socket for the API\n\n[Socket]\nListenStream=2375\nService=docker.service\nBindIPv6Only=both\n\n[Install]\nWantedBy=sockets.target\n",
         "enable": true,
         "name": "docker-tcp.socket"
+      },
+      {
+        "contents": "[Mount]\nWhat=/dev/disk/by-id/ata-VBOX_HARDDISK_VBb121c145-7f71a112-part1\nWhere=/var/amobee\n\n[Install]\nWantedBy=local-fs.target\n",
+        "enable": true,
+        "name": "var-amobee.mount"
       },
       {
         "contents": "[Mount]\nWhat=/opt/local\nWhere=/usr/local\nOptions=bind\n\n[Install]\nWantedBy=multi-user.target\n",
