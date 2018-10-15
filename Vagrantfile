@@ -72,9 +72,9 @@ Vagrant.configure("2") do |config|
   # Latest updates can wreak havok for developers, so we will fix this to the
   # coreos-beta version that is known to work. We will update this once we are
   # happy with the latest release in coreos-beta channel.
-  # Known working version: 1688.3.0
+  # Known working version: 1855.4.0
   # config.vm.box_url = "https://#{$update_channel}.release.core-os.net/amd64-usr/current/coreos_production_vagrant_virtualbox.json"
-  config.vm.box_url="https://#{$update_channel}.release.core-os.net/amd64-usr/1688.3.0/coreos_production_vagrant_virtualbox.json"
+  config.vm.box_url="https://#{$update_channel}.release.core-os.net/amd64-usr/1855.4.0/coreos_production_vagrant_virtualbox.json"
   
   ["vmware_fusion", "vmware_workstation"].each do |vmware|
     config.vm.provider vmware do |v, override|
